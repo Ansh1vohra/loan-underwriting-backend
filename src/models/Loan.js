@@ -17,7 +17,7 @@ const loanSchema = new mongoose.Schema({
   monthlyIncome: { type: Number, required: true },
   purpose: { type: String, required: true },
   bankAccount: { type: String, required: true },
-  status: { type: String, enum: ["Applied", "Approved", "Rejected"], default: "Applied" },
+  status: { type: String, enum: ["Applied", "Approved", "Rejected","Pending"], default: "Applied" },
   underwriting: underwritingSchema, 
   createdAt: { type: Date, default: Date.now }
 });
