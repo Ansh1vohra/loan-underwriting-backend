@@ -8,31 +8,31 @@ export const underwriteLoan = async (req, res) => {
     const loan = await Loan.findById(loanId).populate("userId");
     if (!loan) return res.status(404).json({ error: "Loan not found" });
 
-    let decision = "rejected";
+    let decision = "Rejected";
     let score = 100;
     let reasons = [];
 
     // Rule 1: PAN/Aadhaar check
     if (!loan.pan && !loan.aadhaar) {
-      decision = "rejected";
+      decision = "Rejected";
       score = 0;
       reasons.push("Neither PAN nor Aadhaar provided.");
     } 
     else if (loan.monthlyIncome < 15000) {
       // Rule 2: Income too low
-      decision = "rejected";
+      decision = "Rejected";
       score = 20;
       reasons.push("Monthly income too low (< ₹15,000).");
     } 
     else if (loan.amount > loan.monthlyIncome * 20) {
       // Rule 3: Loan-to-income ratio too high
-      decision = "rejected";
+      decision = "Rejected";
       score = 30;
       reasons.push("Requested loan amount too high vs income (>20×).");
     } 
     else {
       // ✅ Approve if none of the above triggered
-      decision = "approved";
+      decision = "Approved";
       score = 90;
       reasons.push("Income and loan amount are within acceptable limits.");
     }
