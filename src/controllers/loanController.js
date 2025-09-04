@@ -3,20 +3,23 @@ import User from "../models/User.js";
 
 export const applyLoan = async (req, res) => {
   try {
-    const { userId } = req.user; 
-    const { pan, aadhaar, monthlyIncome, purpose, bankAccount, loanType } = req.body;
+    const { userId } = req.user;
+    const { pan, aadhaar, panOrAadhaar, monthlyIncome, purpose, bankAccount, loanType } = req.body;
+
+    let finalPan = pan || (panOrAadhaar && panOrAadhaar.match(/[A-Z]{5}[0-9]{4}[A-Z]{1}/) ? panOrAadhaar : null);
+    let finalAadhaar = aadhaar || (panOrAadhaar && /^\d{12}$/.test(panOrAadhaar) ? panOrAadhaar : null);
 
     if (!purpose || !monthlyIncome || !bankAccount || !loanType) {
       return res.status(400).json({ error: "All fields are required" });
     }
-    if (!pan && !aadhaar) {
+    if (!finalPan && !finalAadhaar) {
       return res.status(400).json({ error: "Either PAN or Aadhaar is required" });
     }
 
     const loan = await Loan.create({
       userId,
-      pan,
-      aadhaar,
+      pan: finalPan,
+      aadhaar: finalAadhaar,
       monthlyIncome,
       purpose,
       bankAccount,
