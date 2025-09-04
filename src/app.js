@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 
 import authRoutes from "./routes/authRoutes.js";
 import loanRoutes from "./routes/loanRoutes.js";
@@ -9,6 +10,7 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // parse JSON requests
+app.use(cors()); // enable CORS for all routes
 
 // Routes
 app.use("/api/auth", authRoutes);
