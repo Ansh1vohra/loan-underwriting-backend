@@ -4,7 +4,7 @@ import User from "../models/User.js";
 export const applyLoan = async (req, res) => {
   try {
     const { userId } = req.user;
-    const { pan, aadhaar, panOrAadhaar, monthlyIncome, purpose, bankAccount, loanType } = req.body;
+    const { pan, aadhaar, panOrAadhaar, monthlyIncome, purpose, bankAccount, loanType,amount } = req.body;
 
     let finalPan = pan || (panOrAadhaar && panOrAadhaar.match(/[A-Z]{5}[0-9]{4}[A-Z]{1}/) ? panOrAadhaar : null);
     let finalAadhaar = aadhaar || (panOrAadhaar && /^\d{12}$/.test(panOrAadhaar) ? panOrAadhaar : null);
@@ -23,7 +23,8 @@ export const applyLoan = async (req, res) => {
       monthlyIncome,
       purpose,
       bankAccount,
-      loanType
+      loanType,
+      amount
     });
 
     res.json({ message: "Loan application submitted", loan });

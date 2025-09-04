@@ -12,6 +12,7 @@ const loanSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   pan: { type: String },
   aadhaar: { type: String },
+  amount: { type: Number, required: true },
   loanType: { type: String, enum: ["Personal", "Home", "Car", "Education", "Business"], required: true },
   monthlyIncome: { type: Number, required: true },
   purpose: { type: String, required: true },
