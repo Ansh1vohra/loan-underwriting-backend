@@ -1,9 +1,6 @@
 // controllers/underwritingController.js
 import Loan from "../models/Loan.js";
 
-// controllers/underwritingController.js
-import Loan from "../models/Loan.js";
-
 export const underwriteLoan = async (req, res) => {
   try {
     const { loanId } = req.params;
