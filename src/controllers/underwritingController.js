@@ -8,7 +8,6 @@ export const underwriteLoan = async (req, res) => {
     const loan = await Loan.findById(loanId).populate("userId");
     if (!loan) return res.status(404).json({ error: "Loan not found" });
 
-    // --- Simple AI underwriting logic ---
     let decision = "Pending";
     let score = 0;
     let reasons = [];
@@ -17,38 +16,33 @@ export const underwriteLoan = async (req, res) => {
     if (loan.monthlyIncome < 15000) {
       decision = "Rejected";
       score = 20;
-      reasons.push("Monthly income too low");
+      reasons.push("Monthly income too low (< ₹15,000).");
     } else if (loan.monthlyIncome >= 15000 && loan.monthlyIncome < 50000) {
       decision = "Pending";
       score = 60;
-      reasons.push("Moderate income - needs further review");
+      reasons.push("Moderate income, further review required.");
     } else if (loan.monthlyIncome >= 50000) {
       decision = "Approved";
       score = 90;
-      reasons.push("High income");
+      reasons.push("High monthly income (≥ ₹50,000).");
     }
 
     // Rule 2: Check PAN/Aadhaar presence
     if (!loan.pan && !loan.aadhaar) {
       decision = "Rejected";
       score = 0;
-      reasons.push("Missing PAN/Aadhaar");
+      reasons.push("Neither PAN nor Aadhaar provided.");
     }
 
-    // Update loan with underwriting results
     loan.status = decision;
-    loan.underwriting = {
-      evaluatedAt: new Date(),
-      score,
-      decision,
-      reasons
-    };
     await loan.save();
 
     res.json({
       message: "Underwriting completed",
       loanId: loan._id,
-      underwriting: loan.underwriting
+      decision,
+      score,
+      reasons,  // ✅ Always include reasons
     });
   } catch (error) {
     console.error(error);
